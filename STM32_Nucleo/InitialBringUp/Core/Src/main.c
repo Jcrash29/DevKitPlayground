@@ -98,12 +98,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  printf("Hello World\r\n");
-	  HAL_GPIO_WritePin(GreenLed_GPIO_Port, GreenLed_Pin, GPIO_PIN_SET);
-	  HAL_Delay(500);
-	  HAL_GPIO_WritePin(GreenLed_GPIO_Port, GreenLed_Pin, GPIO_PIN_RESET);
-	  HAL_Delay(500);
+
     /* USER CODE BEGIN 3 */
+	printf("Hello World\r\n");
+	HAL_GPIO_WritePin(GreenLed_GPIO_Port, GreenLed_Pin, GPIO_PIN_SET);
+	HAL_Delay(500);
+	HAL_GPIO_WritePin(GreenLed_GPIO_Port, GreenLed_Pin, GPIO_PIN_RESET);
+	HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
@@ -218,6 +219,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GreenLed_GPIO_Port, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI4_15_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
@@ -237,6 +242,19 @@ int _write(int file,char *ptr, int len)
  __io_putchar(*ptr++);
  }
 return len;
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	switch(GPIO_Pin)
+	{
+	case BlueButton_Pin:
+		printf("Button Pressed\r\n");
+		break;
+	default:
+		printf("Unhandled interrupt--ERROR\r\n");
+		break;
+	}
 }
 /* USER CODE END 4 */
 
